@@ -1,9 +1,7 @@
-package com.example.bitcoin.face.controller;
+package com.example.face.controller;
 
-import com.example.bitcoin.face.dto.FaceEvaluateDTO;
-import com.example.bitcoin.face.service.FaceEvaluateService;
-import com.example.bitcoin.service.VisitorService;
-import jakarta.servlet.http.HttpSession;
+import com.example.face.dto.FaceEvaluateDTO;
+import com.example.face.service.FaceEvaluateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +25,9 @@ public class FaceEvaluateController {
     @Autowired
     private FaceEvaluateService faceEvaluateService;
 
-    private final VisitorService visitorService;
-
-    @GetMapping("/faceEvaluate")
+    @GetMapping("/")
     public String faceEvaluate() {
-        visitorService.incrementVisitorCount("face");
-        return "face/faceEvaluate";
+        return "faceEvaluate";
     }
 
     @PostMapping("/api/evaluate")

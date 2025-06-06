@@ -1,4 +1,4 @@
-package com.example.bitcoin.face.dto;
+package com.example.face.dto;
 
 import lombok.*;
 

@@ -1,4 +1,4 @@
-package com.example.bitcoin.face.entity;
+package com.example.face.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

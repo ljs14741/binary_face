@@ -1,26 +1,59 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <th:block th:include="common/header"></th:block>
-    <title>오늘의 비주얼 - AI 기반 외모 평가</title>
-    <meta name="title" content="오늘의 비주얼">
-    <meta name="description" content="AI 기반 외모 평가 - 오늘의 비주얼에서 당신의 외모를 AI로 평가받아보세요! 간단한 업로드로 점수를 확인하고, 재미있는 결과를 친구들과 공유해보세요.">
-    <meta name="keywords" content="오늘의 비주얼, AI 외모 평가, AI 얼굴 평가">
-    <meta property="og:title" content="오늘의 비주얼 - AI 기반 외모 평가">
-    <meta property="og:description" content="AI 기반 외모 평가 - 오늘의 비주얼에서 당신의 외모를 AI로 평가받아보세요! 간단한 업로드로 점수를 확인하고, 재미있는 결과를 친구들과 공유해보세요.">
-    <meta property="og:image" content="https://binary96.store/img/radish.png">
-    <meta property="og:url" content="https://binary96.store/faceEvaluate">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>AI 기반 외모 평가 | Binary World</title>
+    <meta name="description" content="AI가 얼굴을 분석하여 당신의 매력을 평가해드립니다. 지금 사진을 업로드하고 재미있는 외모 테스트를 받아보세요!">
+    <meta name="keywords" content="AI 외모 평가, 얼굴 분석, AI 얼굴 점수, 이미지 평가, 외모 테스트, 매력도 테스트, AI 사진 분석, 비주얼 테스트">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://face.binaryworld.kr">
+    <meta property="og:title" content="AI 외모 평가 | 당신의 매력은 몇 점?">
+    <meta property="og:description" content="AI가 얼굴을 보고 평가합니다! 지금 사진을 업로드하고 재미있는 비주얼 테스트를 받아보세요.">
+    <meta property="og:image" content="https://face.binaryworld.kr/img/radish.png">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AI 외모 평가 | 당신의 매력은 몇 점?">
+    <meta name="twitter:description" content="사진을 올리면 AI가 당신의 외모 점수를 매겨드립니다! 지금 바로 테스트하세요.">
+    <meta name="twitter:image" content="https://face.binaryworld.kr/img/radish.png">
+
+    <!-- SEO Crawling -->
+    <meta name="robots" content="index, follow">
+
+    <!-- CSRF (Spring Security) -->
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/face.css}">
+
+    <!-- ✅ 파비콘 (모든 디바이스용 포함) -->
+    <link rel="icon" href="/img/favicon/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="57x57" href="/img/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/img/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/img/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/img/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/img/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/img/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/img/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/img/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/img/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/img/favicon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/img/favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6890085609044109"
+            crossorigin="anonymous"></script>
 </head>
 <body>
-<th:block th:include="common/headBar"></th:block>
-
     <div class="intro">
-        <h1 class="main-title">오늘의 비주얼 - AI 기반 외모 평가</h1>
-    </div>
-
-    <div id="domain-notice" style="background-color: #ffeb3b; padding: 10px; text-align: center; font-weight: bold;">
-        📢 사이트 도메인이 <a href="https://binaryworld.kr" style="color: #d32f2f;">binaryworld.kr</a> 로 변경 작업중입니다.
+        <h1 class="main-title">AI 기반 외모 평가 | Binary World</h1>
     </div>
 
     <div class="container-face">
@@ -88,17 +121,15 @@
         </div>
     </div>
 
-    <th:block th:include="common/footer"></th:block>
-
     <script>
         function shareTwitter() {
             var sendText = "AI 외모 심사";
-            var sendUrl = "https://binary96.store/faceEvaluate";
+            var sendUrl = "https://face.binaryworld.kr";
             window.open("https://twitter.com/intent/tweet?text=" + sendText + "&url=" + sendUrl);
         }
 
         function shareFacebook() {
-            var sendUrl = "https://binary96.store/faceEvaluate";
+            var sendUrl = "https://face.binaryworld.kr";
             window.open("http://www.facebook.com/sharer/sharer.php?u=" + sendUrl);
         }
 
@@ -112,10 +143,10 @@
                 content: {
                     title: '오늘의 비주얼',
                     description: 'AI 외모 평가로 친구들과 술값 내기 한 판 어떠신지? ^^',
-                    imageUrl: 'https://binary96.store/faceEvaluate',
+                    imageUrl: 'https://face.binaryworld.kr',
                     link: {
-                        mobileWebUrl: 'https://binary96.store/faceEvaluate',
-                        webUrl: 'https://binary96.store/faceEvaluate'
+                        mobileWebUrl: 'https://face.binaryworld.kr',
+                        webUrl: 'https://face.binaryworld.kr'
                     },
                 },
             });

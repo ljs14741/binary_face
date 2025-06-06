@@ -1,7 +1,8 @@
-package com.example.bitcoin.face.service;
+package com.example.face.service;
 
-import com.example.bitcoin.face.repository.FaceEvaluateRepository;
-import com.example.bitcoin.service.OpenAIService;
+import com.example.face.entity.FaceEvaluate;
+import com.example.face.repository.FaceEvaluateRepository;
+import com.example.face.service.OpenAIService;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Collectors;
-import com.example.bitcoin.face.entity.FaceEvaluate;
 
 @Service
 @Slf4j
