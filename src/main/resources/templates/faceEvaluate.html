@@ -2,9 +2,13 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>AI 기반 외모 평가 | Binary World</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <meta name="description" content="AI가 얼굴을 분석하여 당신의 매력을 평가해드립니다. 지금 사진을 업로드하고 재미있는 외모 테스트를 받아보세요!">
     <meta name="keywords" content="AI 외모 평가, 얼굴 분석, AI 얼굴 점수, 이미지 평가, 외모 테스트, 매력도 테스트, AI 사진 분석, 비주얼 테스트">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Binary World">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
@@ -18,16 +22,6 @@
     <meta name="twitter:title" content="AI 외모 평가 | 당신의 매력은 몇 점?">
     <meta name="twitter:description" content="사진을 올리면 AI가 당신의 외모 점수를 매겨드립니다! 지금 바로 테스트하세요.">
     <meta name="twitter:image" content="https://face.binaryworld.kr/img/radish.png">
-
-    <!-- SEO Crawling -->
-    <meta name="robots" content="index, follow">
-
-    <!-- CSRF (Spring Security) -->
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-
-    <!-- Stylesheet -->
-    <link rel="stylesheet" type="text/css" th:href="@{/css/face.css}">
 
     <!-- ✅ 파비콘 (모든 디바이스용 포함) -->
     <link rel="icon" href="/img/favicon/favicon.ico" type="image/x-icon">
@@ -49,277 +43,325 @@
     <meta name="msapplication-TileImage" content="/img/favicon/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
 
+    <!-- CSRF (Spring Security) -->
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+    <!-- ✅ Fonts & CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Roboto&display=swap" rel="stylesheet">
+    <link id="theme-style" rel="stylesheet" th:href="@{/css/main-light.css}">
+
+    <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
+
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6890085609044109"
             crossorigin="anonymous"></script>
 </head>
 <body>
-    <div class="intro">
-        <h1 class="main-title">AI 기반 외모 평가 | Binary World</h1>
+
+<th:block th:include="common/header"></th:block>
+
+<div class="page-title">
+    <h1>AI 기반 외모 평가 | Binary World</h1>
+    <p>사진을 업로드하고 재미있는 비주얼 테스트를 받아보세요!</p>
+</div>
+
+<div class="container-face">
+    <form id="upload-form" enctype="multipart/form-data" class="upload-form">
+        <label for="file-input" class="upload-button">📷 얼굴 사진 업로드하기</label>
+        <input type="file" id="file-input" name="image" accept="image/*" onchange="previewImage(event)">
+    </form>
+
+    <div class="preview-container">
+        <img id="preview" class="image-preview" style="display: none;" alt="미리보기">
     </div>
 
-    <div class="container-face">
-        <h3>오늘의 비주얼을 확인해 보세요~ </h3>
-        <div class="example-images">
-            <ul>
-                <li><a href="#" onclick="showExampleImage('example1.png')">예시1</a></li>
-                <li><a href="#" onclick="showExampleImage('example2.png')">예시2</a></li>
-                <li><a href="#" onclick="showExampleImage('example3.png')">예시3</a></li>
-            </ul>
-        </div>
-
-        <div id="imageModal" class="modal" style="display: none;">
-            <div class="modal-content">
-                <span class="close-btn" onclick="closeModal()">&times;</span>
-                <img id="modalImage" class="modal-image" alt="Example Image">
-            </div>
-        </div>
-
-        <form id="upload-form" enctype="multipart/form-data">
-            <div id="file-upload-container" class="single-upload">
-                <div class="file-upload">
-                    <label for="file-input" class="upload-button">
-                        얼굴 사진을 업로드해보세요!
-                    </label>
-                    <input type="file" id="file-input" name="image" accept="image/*" onchange="previewImage(event)">
-                    <div class="preview-container">
-                        <img id="preview" class="image-preview" style="display: none;">
-                    </div>
-                    <div class="result-content" style="display: none;">
-                        <p class="result-nickname"><span class="result-nickname"></span></p>
-                        <p><span class="result-evaluation"></span></p>
-                        <p><span class="result-celebrity"></span></p>
-                        <p><span class="result-score"></span></p>
-                    </div>
-                </div>
-            </div>
-        </form>
-
-        <div id="loading-spinner" class="loading-spinner" style="display: none;">
-            <div class="spinner"></div>
-            <p>잠시만 기다료... >_<</p>
-        </div>
-
-        <div class="icon-container">
-            <a id="btnTwitter" class="link-icon twitter" href="javascript:shareTwitter();"></a>
-            <a id="btnFacebook" class="link-icon facebook" href="javascript:shareFacebook();"></a>
-            <a id="btnKakao" class="link-icon kakao" href="javascript:shareKakao();"></a>
-        </div>
-        <div class="balance-container">
-            <h3>현재 잔액: <span id="remaining-balance"></span> $</h3>
-        </div>
-        <div class="loading-message">당신의 비주얼은 어떠셨나요? ㅎ_ㅎ </div>
-        <div class="loading-message">비주얼을 확인할 때 마다 관리자 주머니가 털립니다.. </div>
-        <div class="loading-message">잔액이 0원이 되면 <strong>오늘의 비주얼</strong> 서비스는 이용할 수 없습니다. </div>
-        <div class="loading-message">후원해주시는 당신은 멋쟁이! 😎</div>
-        <div class="loading-message">계좌 정보는 하단에! ↓ ↓ ↓</div>
-        <div class="loading-message">사진의 크기는 10MB를 초과해서는 안됩니다.</div>
+    <div class="example-images">
+        <ul>
+            <li><a href="#" onclick="showExampleImage('example1.png')">예시1</a></li>
+            <li><a href="#" onclick="showExampleImage('example2.png')">예시2</a></li>
+            <li><a href="#" onclick="showExampleImage('example3.png')">예시3</a></li>
+        </ul>
     </div>
 
-    <div id="custom-alert" class="custom-alert">
-        <div class="custom-alert-content">
-            <p id="custom-alert-message"></p>
-            <button onclick="closeCustomAlert()">확인</button>
-        </div>
+    <div id="loading-spinner" class="loading-spinner" style="display: none;">
+        <div class="spinner"></div>
+        <p>AI가 얼굴을 분석 중입니다. 잠시만 기다려 주세요...</p>
     </div>
 
-    <script>
-        function shareTwitter() {
-            var sendText = "AI 외모 심사";
-            var sendUrl = "https://face.binaryworld.kr";
-            window.open("https://twitter.com/intent/tweet?text=" + sendText + "&url=" + sendUrl);
-        }
+    <div class="result-content" style="display: none;">
+        <p class="result-nickname"></p>
+        <p class="result-evaluation"></p>
+        <p class="result-celebrity"></p>
+        <p class="result-score"></p>
+    </div>
 
-        function shareFacebook() {
-            var sendUrl = "https://face.binaryworld.kr";
-            window.open("http://www.facebook.com/sharer/sharer.php?u=" + sendUrl);
-        }
+    <div class="icon-container">
+        <a id="btnTwitter" class="link-icon twitter" href="javascript:shareTwitter();"></a>
+        <a id="btnFacebook" class="link-icon facebook" href="javascript:shareFacebook();"></a>
+        <a id="btnKakao" class="link-icon kakao" href="javascript:shareKakao();"></a>
+    </div>
 
-        function shareKakao() {
-            Kakao.init('8b68c737be6b8e9a8007c61ee6f9b8da');
+    <div class="balance-container">
+        <p>잔액: <span id="remaining-balance">0.00</span> $</p>
+        <p class="loading-message">※ 잔액이 소진되면 서비스 이용이 중단됩니다.</p>
+    </div>
+</div>
 
-            // 카카오링크 버튼 생성
-            Kakao.Share.createDefaultButton({
-                container: '#btnKakao',
-                objectType: 'feed',
-                content: {
-                    title: '오늘의 비주얼',
-                    description: 'AI 외모 평가로 친구들과 술값 내기 한 판 어떠신지? ^^',
-                    imageUrl: 'https://face.binaryworld.kr',
-                    link: {
-                        mobileWebUrl: 'https://face.binaryworld.kr',
-                        webUrl: 'https://face.binaryworld.kr'
-                    },
-                },
+<!-- 예시 이미지 모달 -->
+<div id="imageModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <img id="modalImage" class="modal-image" alt="예시 이미지">
+    </div>
+</div>
+
+<!-- 커스텀 알림 -->
+<div id="custom-alert" class="custom-alert">
+    <div class="custom-alert-content">
+        <p id="custom-alert-message"></p>
+        <button onclick="closeCustomAlert()">확인</button>
+    </div>
+</div>
+
+<th:block th:include="common/footer"></th:block>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // 1. 햄버거 메뉴 토글
+        const toggleBtn = document.querySelector('.nav-toggle');
+        const nav = document.querySelector('.nav-links');
+
+        if (toggleBtn && nav) {
+            toggleBtn.addEventListener('click', () => {
+                toggleBtn.classList.toggle('active');
+                nav.classList.toggle('open');
             });
         }
 
-        function previewImage(event) {
-            const file = event.target.files[0];
-            const preview = document.getElementById('preview');
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                };
-                reader.readAsDataURL(file);
+        // 2. 테마 토글
+        const themeToggle = document.getElementById('themeToggle');
+        const themeLink = document.getElementById('theme-style');
+        const currentTheme = localStorage.getItem('theme') || 'dark';
 
-                // 이미지 미리보기 후 API 요청
-                uploadImages();
-            }
+        applyTheme(currentTheme);
+
+        if (themeToggle && themeLink) {
+            themeToggle.addEventListener('click', () => {
+                const isDark = themeLink.getAttribute('href').includes('dark');
+                const nextTheme = isDark ? 'light' : 'dark';
+                applyTheme(nextTheme);
+            });
         }
 
-        function showCustomAlert(message) {
-            document.getElementById("custom-alert-message").innerText = message;
-            document.getElementById("custom-alert").style.display = "flex";
+        function applyTheme(theme) {
+            themeLink.setAttribute('href', `/css/main-${theme}.css`);
+            localStorage.setItem('theme', theme);
+        }
+    });
+
+    function shareTwitter() {
+        var sendText = "AI 외모 심사";
+        var sendUrl = "https://face.binaryworld.kr";
+        window.open("https://twitter.com/intent/tweet?text=" + sendText + "&url=" + sendUrl);
+    }
+
+    function shareFacebook() {
+        var sendUrl = "https://face.binaryworld.kr";
+        window.open("http://www.facebook.com/sharer/sharer.php?u=" + sendUrl);
+    }
+
+    function setupKakaoShareButton() {
+        if (!window.Kakao) return;
+        if (!document.querySelector('#btnKakao')) return;
+
+        if (!Kakao.isInitialized()) {
+            Kakao.init('8b68c737be6b8e9a8007c61ee6f9b8da');
         }
 
-        function closeCustomAlert() {
-            document.getElementById("custom-alert").style.display = "none";
-        }
-
-        async function uploadImages() {
-            const fileInputs = document.querySelectorAll('input[type="file"]');
-            const resultContents = document.getElementsByClassName('result-content');
-            const loadingSpinner = document.querySelector('.loading-spinner');
-
-            loadingSpinner.style.display = 'block';
-
-            for (let i = 0; i < fileInputs.length; i++) {
-                const file = fileInputs[i].files[0];
-                if (file) {
-                    const formData = new FormData();
-                    formData.append('images', file);
-
-                    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-                    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
-
-                    const headers = {};
-                    headers[csrfHeader] = csrfToken;
-
-                    try {
-                        const response = await fetch('/api/evaluate', {
-                            method: 'POST',
-                            headers: headers,
-                            body: formData,
-                        });
-
-                        let data;
-                        try {
-                            data = await response.json();  // 항상 JSON 변환 시도
-                        } catch (error) {
-                            console.error('JSON 파싱 실패:', error);
-                            alert("서버 응답을 처리할 수 없습니다.");
-                            return;
-                        }
-
-                        // 🔹 OpenAI API 사용량 초과 감지
-                        if (data.results && data.results.length > 0 && data.results[0].includes("insufficient_quota")) {
-                            showCustomAlert("정말 많은 분들이 이용해주셨습니다! 감사합니다! 🎉\n\n현재 사용 가능한 금액이 없습니다. ❌\n후원을 통해 서비스를 계속 이용하세요!\n\n7천원이면 됩니다... ㅎ");
-                            return;
-                        }
-
-                        if (data.results && data.results.length > 0) {
-                            const resultJSON = JSON.parse(data.results[0]);
-                            const resultContent = resultContents[i];
-
-                            if (resultJSON.choices && resultJSON.choices.length > 0) {
-                                const content = JSON.parse(resultJSON.choices[0].message.content);
-                                const score = content.score;
-                                const scoreText = document.createElement('span');
-                                scoreText.className = 'score-text animated-score';
-                                scoreText.textContent = getScoreMessage(score);
-
-                                resultContent.querySelector('.result-nickname').textContent = "당신은 " + content.nickname;
-                                resultContent.querySelector('.result-evaluation').textContent = content.evaluation;
-                                resultContent.querySelector('.result-celebrity').textContent = content.look_alike_celebrity;
-
-                                const resultScoreElement = resultContent.querySelector('.result-score');
-                                resultScoreElement.innerHTML = '';
-                                resultScoreElement.appendChild(scoreText);
-
-                                resultContent.style.display = 'block';
-                            } else {
-                                console.error('Unexpected data format in choices:', resultJSON);
-                            }
-                        } else {
-                            console.error('Unexpected data format in results:', data);
-                        }
-                    } catch (error) {
-                        console.error('Error in uploadImages:', error);
-                    } finally {
-                        loadingSpinner.style.display = 'none';
-                    }
+        Kakao.Share.createDefaultButton({
+            container: '#btnKakao',
+            objectType: 'feed',
+            content: {
+                title: '오늘의 비주얼',
+                description: 'AI 외모 평가로 친구들과 술값 내기 한 판 어떠신지? ^^',
+                imageUrl: 'https://face.binaryworld.kr/img/radish.png',
+                link: {
+                    mobileWebUrl: 'https://face.binaryworld.kr',
+                    webUrl: 'https://face.binaryworld.kr'
                 }
             }
+        });
+    }
 
-            // 잔액 업데이트 비동기 처리 추가
-            await updateBalanceAfterUsage();
+    setupKakaoShareButton();
+
+    function previewImage(event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById('preview');
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+
+            // 이미지 미리보기 후 API 요청
+            uploadImages();
         }
+    }
 
-        async function updateBalanceAfterUsage() {
-            try {
-                const response = await fetch('/api/faceEvaluate/balance');
-                const data = await response.json();
-                document.getElementById('remaining-balance').textContent = data.remainingBalance.toFixed(2);
-            } catch (error) {
-                console.error('Error updating balance:', error);
+    function showCustomAlert(message) {
+        document.getElementById("custom-alert-message").innerText = message;
+        document.getElementById("custom-alert").style.display = "flex";
+    }
+
+    function closeCustomAlert() {
+        document.getElementById("custom-alert").style.display = "none";
+    }
+
+    async function uploadImages() {
+        const fileInputs = document.querySelectorAll('input[type="file"]');
+        const resultContents = document.getElementsByClassName('result-content');
+        const loadingSpinner = document.querySelector('.loading-spinner');
+
+        loadingSpinner.style.display = 'block';
+
+        for (let i = 0; i < fileInputs.length; i++) {
+            const file = fileInputs[i].files[0];
+            if (file) {
+                const formData = new FormData();
+                formData.append('images', file);
+
+                const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+                const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+                const headers = {};
+                headers[csrfHeader] = csrfToken;
+
+                try {
+                    const response = await fetch('/api/evaluate', {
+                        method: 'POST',
+                        headers: headers,
+                        body: formData,
+                    });
+
+                    let data;
+                    try {
+                        data = await response.json();  // 항상 JSON 변환 시도
+                    } catch (error) {
+                        console.error('JSON 파싱 실패:', error);
+                        alert("서버 응답을 처리할 수 없습니다.");
+                        return;
+                    }
+
+                    // 🔹 OpenAI API 사용량 초과 감지
+                    if (data.results && data.results.length > 0 && data.results[0].includes("insufficient_quota")) {
+                        showCustomAlert("정말 많은 분들이 이용해주셨습니다! 감사합니다! 🎉\n\n현재 사용 가능한 금액이 없습니다. ❌\n후원을 통해 서비스를 계속 이용하세요!\n\n7천원이면 됩니다... ㅎ");
+                        return;
+                    }
+
+                    if (data.results && data.results.length > 0) {
+                        const resultJSON = JSON.parse(data.results[0]);
+                        const resultContent = resultContents[i];
+
+                        if (resultJSON.choices && resultJSON.choices.length > 0) {
+                            const content = JSON.parse(resultJSON.choices[0].message.content);
+                            const score = content.score;
+                            const scoreText = document.createElement('span');
+                            scoreText.className = 'score-text animated-score';
+                            scoreText.textContent = getScoreMessage(score);
+
+                            resultContent.querySelector('.result-nickname').textContent = "당신은 " + content.nickname;
+                            resultContent.querySelector('.result-evaluation').textContent = content.evaluation;
+                            resultContent.querySelector('.result-celebrity').textContent = content.look_alike_celebrity;
+
+                            const resultScoreElement = resultContent.querySelector('.result-score');
+                            resultScoreElement.innerHTML = '';
+                            resultScoreElement.appendChild(scoreText);
+
+                            resultContent.style.display = 'block';
+                        } else {
+                            console.error('Unexpected data format in choices:', resultJSON);
+                        }
+                    } else {
+                        console.error('Unexpected data format in results:', data);
+                    }
+                } catch (error) {
+                    console.error('Error in uploadImages:', error);
+                } finally {
+                    loadingSpinner.style.display = 'none';
+                }
             }
         }
 
-        function getScoreMessage(score) {
-            if (score >= 9) {
-                return `🌟 ${score}점! 완벽해요! 진짜 GD도 울고갈 비주얼이네요!`;
-            } else if (score >= 7) {
-                return `😎 ${score}점! 굉장해요! 다들 한눈에 반하겠는걸요?`;
-            } else if (score >= 5) {
-                return `😊 ${score}점! 꽤나 매력적이세요!`;
-            } else {
-                return `😅 ${score}점... 앞으로의 개선 여지가 있네요!`;
-            }
+        // 잔액 업데이트 비동기 처리 추가
+        await updateBalanceAfterUsage();
+    }
+
+    async function updateBalanceAfterUsage() {
+        try {
+            const response = await fetch('/api/faceEvaluate/balance');
+            const data = await response.json();
+            document.getElementById('remaining-balance').textContent = data.remainingBalance.toFixed(2);
+        } catch (error) {
+            console.error('Error updating balance:', error);
         }
-        async function fetchBalance() {
-            try {
-                const response = await fetch('/api/faceEvaluate/balance');
-                const data = await response.json();
-                console.log('data: ' + data );
-                console.log('data.remainingBalance: ' + data.remainingBalance );
-                document.getElementById('remaining-balance').textContent = data.remainingBalance.toFixed(2);
-            } catch (error) {
-                console.error('Error fetching balance:', error);
-            }
+    }
+
+    function getScoreMessage(score) {
+        if (score >= 9) {
+            return `🌟 ${score}점! 완벽해요! 진짜 GD도 울고갈 비주얼이네요!`;
+        } else if (score >= 7) {
+            return `😎 ${score}점! 굉장해요! 다들 한눈에 반하겠는걸요?`;
+        } else if (score >= 5) {
+            return `😊 ${score}점! 꽤나 매력적이세요!`;
+        } else {
+            return `😅 ${score}점... 앞으로의 개선 여지가 있네요!`;
         }
-
-
-        function showExampleImage(imageName) {
-            const modal = document.getElementById('imageModal');
-            const modalImage = document.getElementById('modalImage');
-
-            // static/img 경로 설정
-            const imagePath = `/img/${imageName}`;
-
-            // 이미지 경로 설정
-            modalImage.src = imagePath;
-
-            // 모달 표시
-            modal.style.display = 'block';
+    }
+    async function fetchBalance() {
+        try {
+            const response = await fetch('/api/faceEvaluate/balance');
+            const data = await response.json();
+            console.log('data: ' + data );
+            console.log('data.remainingBalance: ' + data.remainingBalance );
+            document.getElementById('remaining-balance').textContent = data.remainingBalance.toFixed(2);
+        } catch (error) {
+            console.error('Error fetching balance:', error);
         }
+    }
 
-        function closeModal() {
-            const modal = document.getElementById('imageModal');
+
+    function showExampleImage(imageName) {
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+
+        // static/img 경로 설정
+        const imagePath = `/img/${imageName}`;
+
+        // 이미지 경로 설정
+        modalImage.src = imagePath;
+
+        // 모달 표시
+        modal.style.display = 'block';
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('imageModal');
+        modal.style.display = 'none';
+    }
+
+    // 모달 외부 클릭 시 닫기
+    window.onclick = function (event) {
+        const modal = document.getElementById('imageModal');
+        if (event.target === modal) {
             modal.style.display = 'none';
         }
+    };
 
-        // 모달 외부 클릭 시 닫기
-        window.onclick = function (event) {
-            const modal = document.getElementById('imageModal');
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
-        };
-
-        document.addEventListener('DOMContentLoaded', fetchBalance);
-    </script>
+    document.addEventListener('DOMContentLoaded', fetchBalance);
+</script>
 
 </body>
 </html>

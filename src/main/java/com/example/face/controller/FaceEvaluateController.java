@@ -25,6 +25,21 @@ public class FaceEvaluateController {
     @Autowired
     private FaceEvaluateService faceEvaluateService;
 
+    @GetMapping("/about")
+    public String about() {
+        return "common/about";
+    }
+
+    @GetMapping("/privacy-policy")
+    public String privacyPolicy() {
+        return "common/privacy-policy";
+    }
+
+    @GetMapping("/contact")
+    public String contact() {
+        return "common/contact";
+    }
+
     @GetMapping("/")
     public String faceEvaluate() {
         return "faceEvaluate";
