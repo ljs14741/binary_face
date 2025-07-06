@@ -2,6 +2,8 @@ package com.example.face.controller;
 
 import com.example.face.dto.FaceEvaluateDTO;
 import com.example.face.service.FaceEvaluateService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import com.example.face.service.VisitorService;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -24,6 +27,8 @@ public class FaceEvaluateController {
 
     @Autowired
     private FaceEvaluateService faceEvaluateService;
+
+    private final VisitorService visitorService;
 
     @GetMapping("/about")
     public String about() {
@@ -41,7 +46,8 @@ public class FaceEvaluateController {
     }
 
     @GetMapping("/")
-    public String faceEvaluate() {
+    public String faceEvaluate(HttpServletRequest request, HttpServletResponse response) {
+        visitorService.countVisitIfNeeded(request, response, "face");
         return "faceEvaluate";
     }
 
