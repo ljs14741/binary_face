@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>AI 기반 외모 평가 | Binary World</title>
     <meta charset="UTF-8">
@@ -23,32 +23,16 @@
     <meta name="twitter:description" content="사진을 올리면 AI가 당신의 외모 점수를 매겨드립니다! 지금 바로 테스트하세요.">
     <meta name="twitter:image" content="https://face.binaryworld.kr/img/radish.png">
 
-    <!-- ✅ 파비콘 (모든 디바이스용 포함) -->
     <link rel="icon" href="/img/favicon/favicon.ico" type="image/x-icon">
-    <link rel="apple-touch-icon" sizes="57x57" href="/img/favicon/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="/img/favicon/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/img/favicon/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/img/favicon/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/img/favicon/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/img/favicon/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/img/favicon/apple-icon-152x152.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="/img/favicon/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="/img/favicon/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon/favicon-16x16.png">
-    <link rel="manifest" href="/img/favicon/manifest.json">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="/img/favicon/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
 
-    <!-- CSRF (Spring Security) -->
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 
-    <!-- ✅ Fonts & CSS -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Roboto&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://binaryworld.kr/common/header.css">
     <link rel="stylesheet" href="https://binaryworld.kr/common/footer.css">
     <link rel="stylesheet" href="https://binaryworld.kr/common/guestbook.css">
@@ -59,18 +43,19 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6890085609044109"
             crossorigin="anonymous"></script>
 </head>
-<body>
+<body class="bw-face-body">
 
 <header id="global-header" aria-label="Binary World 공통 메뉴"></header>
 
 <div class="page-title">
-    <h1>AI 기반 외모 평가 | Binary World</h1>
-    <p>사진을 업로드하고 재미있는 비주얼 테스트를 받아보세요!</p>
+    <p class="bw-face-kicker">Binary World</p>
+    <h1>AI 기반 외모 평가</h1>
+    <p>사진을 올리면 AI가 매력을 재미있게 평가해드립니다</p>
 </div>
 
 <div class="container-face">
     <form id="upload-form" enctype="multipart/form-data" class="upload-form">
-        <label for="file-input" class="upload-button">📷 얼굴 사진 업로드하기</label>
+        <label for="file-input" class="upload-button">얼굴 사진 업로드하기</label>
         <input type="file" id="file-input" name="image" accept="image/*" onchange="previewImage(event)">
     </form>
 
