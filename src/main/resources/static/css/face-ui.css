@@ -1,0 +1,340 @@
+/*
+  AI 외모 평가 화면 구조 (공용 부분은 binaryworld.kr/common/service.css)
+  색은 main-light.css / main-dark.css
+*/
+
+.container-face {
+  width: min(640px, 100% - 2.5rem);
+  margin: 0.4rem auto 0;
+  padding: 1.8rem;
+  border: 1px solid var(--bw-border);
+  border-radius: calc(var(--bw-radius) + 4px);
+  background: var(--bw-surface-strong);
+  box-shadow: var(--bw-shadow);
+  text-align: center;
+}
+
+/* ===== 사진 올리기 칸 ===== */
+.upload-form {
+  margin: 0;
+}
+
+#file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.upload-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  min-height: 190px;
+  padding: 1.6rem 1rem;
+  border: 2px dashed color-mix(in srgb, var(--bw-accent) 45%, transparent);
+  border-radius: 22px;
+  background:
+    radial-gradient(60% 80% at 50% 0%, var(--bw-accent-soft), transparent 70%),
+    var(--bw-bg);
+  color: var(--bw-text);
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: border-color 0.25s var(--bw-ease), transform 0.25s var(--bw-ease), background-color 0.25s var(--bw-ease);
+}
+
+/* 카메라 아이콘 */
+.upload-button::before {
+  content: "";
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 8h3l1.5-2h7L17 8h3v11H4z'/%3E%3Ccircle cx='12' cy='13' r='3.5'/%3E%3C/svg%3E") center / 32px no-repeat,
+    linear-gradient(145deg, var(--bw-accent-mid), var(--bw-accent));
+  box-shadow: 0 12px 26px var(--bw-accent-shadow);
+  transition: transform 0.3s var(--bw-ease);
+}
+
+.upload-button::after {
+  content: "얼굴이 잘 보이는 사진 한 장이면 돼요";
+  color: var(--bw-muted);
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.upload-button:hover {
+  border-color: var(--bw-accent);
+  transform: translateY(-2px);
+}
+
+.upload-button:hover::before {
+  transform: scale(1.06) rotate(-6deg);
+}
+
+#file-input:focus-visible + .upload-button,
+.upload-form:focus-within .upload-button {
+  outline: 2px solid var(--bw-accent);
+  outline-offset: 3px;
+}
+
+/* ===== 미리보기 ===== */
+.preview-container {
+  margin-top: 1rem;
+}
+
+.image-preview {
+  max-width: 100%;
+  max-height: 360px;
+  margin: 0 auto;
+  border-radius: 20px;
+  box-shadow: var(--bw-shadow);
+  object-fit: contain;
+}
+
+/* ===== 예시 칩 ===== */
+.example-images ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 1.1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.example-images ul::before {
+  content: "예시 보기";
+  align-self: center;
+  margin-right: 0.2rem;
+  color: var(--bw-faint);
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.example-images a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.3rem;
+  padding: 0 1rem;
+  border: 1px solid var(--bw-border-strong);
+  border-radius: 999px;
+  color: var(--bw-text);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: border-color 0.2s var(--bw-ease), color 0.2s var(--bw-ease);
+}
+
+.example-images a:hover {
+  border-color: var(--bw-accent);
+  color: var(--bw-accent);
+}
+
+/* ===== 분석 중 ===== */
+.loading-spinner {
+  margin-top: 1.4rem;
+  color: var(--bw-muted);
+  font-weight: 600;
+}
+
+.spinner {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 0.8rem;
+  border: 4px solid var(--bw-accent-soft);
+  border-top-color: var(--bw-accent);
+  border-radius: 50%;
+  animation: bw-face-spin 0.9s linear infinite;
+}
+
+@keyframes bw-face-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ===== 결과 카드 ===== */
+.result-content {
+  margin-top: 1.4rem;
+  padding: 1.6rem 1.4rem;
+  border-radius: 22px;
+  background:
+    radial-gradient(70% 90% at 0% 0%, var(--bw-glow-a), transparent 60%),
+    radial-gradient(70% 90% at 100% 100%, var(--bw-glow-b), transparent 60%),
+    var(--bw-bg);
+  animation: bw-face-in 0.5s var(--bw-ease);
+}
+
+@keyframes bw-face-in {
+  from { opacity: 0; transform: translateY(14px); }
+}
+
+.result-nickname {
+  margin: 0 0 0.8rem;
+  font-size: clamp(1.4rem, 4vw, 1.9rem);
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -0.04em;
+}
+
+.result-evaluation {
+  margin: 0 0 1rem;
+  color: var(--bw-muted);
+  line-height: 1.75;
+  text-align: left;
+}
+
+.result-celebrity {
+  display: inline-block;
+  margin: 0 0 0.8rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  background: var(--bw-accent-soft);
+  color: var(--bw-accent);
+  font-weight: 800;
+}
+
+.result-celebrity:empty {
+  display: none;
+}
+
+.result-celebrity::before {
+  content: "닮은꼴 · ";
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.result-score {
+  margin: 0;
+}
+
+.score-text {
+  display: inline-block;
+  padding: 0.55rem 1.1rem;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--bw-accent), var(--bw-accent-deep));
+  color: var(--bw-on-accent);
+  font-size: 1.05rem;
+  font-weight: 800;
+  box-shadow: 0 10px 24px var(--bw-accent-shadow);
+}
+
+.animated-score {
+  animation: bw-face-score 0.6s var(--bw-ease) 0.2s both;
+}
+
+@keyframes bw-face-score {
+  from { opacity: 0; transform: scale(0.7); }
+}
+
+/* ===== 공유·잔액 ===== */
+.container-face .icon-container {
+  margin-top: 1.4rem;
+}
+
+.balance-container {
+  margin-top: 1.2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--bw-border);
+  color: var(--bw-faint);
+  font-size: 0.85rem;
+}
+
+.balance-container p {
+  margin: 0.15rem 0;
+}
+
+/* ===== 예시 이미지 창 ===== */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  padding: 1.25rem;
+  background: rgba(8, 10, 14, 0.6);
+  overflow-y: auto;
+}
+
+.modal .modal-content {
+  position: relative;
+  width: min(520px, 100%);
+  margin: 6vh auto 0;
+  padding: 1rem;
+  border-radius: 22px;
+  background: var(--bw-surface-strong);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+}
+
+.modal-image {
+  display: block;
+  width: 100%;
+  border-radius: 14px;
+}
+
+.close-btn {
+  position: absolute;
+  top: -0.8rem;
+  right: -0.8rem;
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  background: var(--bw-text);
+  color: var(--bw-bg);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* ===== 알림 창 ===== */
+.custom-alert {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1001;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  background: rgba(8, 10, 14, 0.55);
+}
+
+.custom-alert-content {
+  width: min(420px, 100%);
+  padding: 1.6rem 1.4rem 1.3rem;
+  border-radius: 22px;
+  background: var(--bw-surface-strong);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+  text-align: center;
+}
+
+.custom-alert-content p {
+  margin: 0 0 1.2rem;
+  white-space: pre-line;
+  line-height: 1.7;
+}
+
+.custom-alert-content button {
+  min-height: 2.8rem;
+  padding: 0 1.6rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--bw-text);
+  color: var(--bw-bg);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+@media (max-width: 640px) {
+  .container-face {
+    width: calc(100% - 2rem);
+    padding: 1.2rem 1rem;
+  }
+
+  .upload-button {
+    min-height: 160px;
+  }
+}

@@ -36,6 +36,9 @@
     <link rel="stylesheet" href="https://binaryworld.kr/common/header.css">
     <link rel="stylesheet" href="https://binaryworld.kr/common/footer.css">
     <link rel="stylesheet" href="https://binaryworld.kr/common/guestbook.css">
+    <!-- 서비스 공용 디자인 (로컬 확인 땐 BW_COMMON 으로 주소를 바꿀 수 있음) -->
+    <link rel="stylesheet" th:href="${@environment.getProperty('bw.common', 'https://binaryworld.kr')} + '/common/service.css'" href="https://binaryworld.kr/common/service.css">
+    <link rel="stylesheet" th:href="@{/css/face-ui.css}">
     <link id="theme-style" rel="stylesheet" th:href="@{/css/main-light.css}">
     <script>
         // 다른 서브도메인에서 고른 테마 이어받기. 처음 온 사람은 밝게 (헤더가 뜨기 전에 미리 바꿔 깜빡임 막음)
@@ -60,12 +63,21 @@
         gtag('config', 'G-0TSFJBQ41N');
     </script>
 </head>
-<body class="bw-face-body">
+<body class="bw-face-body bw-svc-page">
 
 <header id="global-header" aria-label="Binary World 공통 메뉴"></header>
 
 <div class="page-title">
-    <h1>AI 기반 외모 평가</h1>
+    <div class="bw-svc-toys" aria-hidden="true">
+        <span class="bw-toy bw-toy-camera" style="--x:6%;--y:22%;--s:70px;--d:7s;--r0:-10deg;--r1:6deg"></span>
+        <span class="bw-toy bw-toy-heart" style="--x:86%;--y:16%;--s:54px;--d:6.5s;--delay:-2s"></span>
+        <span class="bw-toy bw-toy-chip" style="--x:88%;--y:64%;--s:52px;--d:8s;--delay:-1s;--c1:#d8b4fe;--c2:#9333ea">AI</span>
+        <span class="bw-toy bw-toy-star" style="--x:5%;--y:68%;--s:42px;--d:7.5s;--delay:-3s"></span>
+        <span class="bw-toy bw-toy-ball" style="--x:20%;--y:8%;--s:24px;--d:6s;--delay:-4s"></span>
+        <span class="bw-toy bw-toy-heart" style="--x:76%;--y:84%;--s:26px;--d:5.5s;--delay:-2s"></span>
+    </div>
+    <p class="bw-svc-eyebrow">AI Face</p>
+    <h1>AI 기반 <span class="bw-svc-em">외모 평가</span></h1>
     <p>사진을 올리면 AI가 매력을 재미있게 평가해드립니다</p>
 </div>
 
@@ -351,6 +363,7 @@
     document.addEventListener('DOMContentLoaded', fetchBalance);
 </script>
 
+<script th:src="${@environment.getProperty('bw.common', 'https://binaryworld.kr')} + '/common/service.js'" src="https://binaryworld.kr/common/service.js" defer></script>
 <script src="https://binaryworld.kr/common/header.js" defer></script>
 <script src="https://binaryworld.kr/common/footer.js" defer></script>
 <script src="https://binaryworld.kr/common/guestbook.js" defer></script>
